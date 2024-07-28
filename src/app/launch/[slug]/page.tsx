@@ -1,11 +1,6 @@
-"use client";
-import useError from "@/app/lib/hooks/useError";
-import Loading from "@/app/ui/Loading";
 import { utcToLocaleTime } from "@/app/lib/utils";
-import Image from "next/image";
 import Link from "next/link";
-import { ReactElement, useEffect, useState } from "react";
-import { Launch } from "@/app/lib/types";
+import { ReactElement } from "react";
 import clsx from "clsx";
 import { getLaunch } from "@/app/api";
 import LaunchImage from "./_components/LaunchImage";
@@ -13,14 +8,10 @@ import LaunchImage from "./_components/LaunchImage";
 interface PageProps {
   params: { slug: string };
 }
-export default function Page({ params: { slug } }: PageProps): ReactElement {
-  const [data, setData] = useState<Launch | undefined>();
-  const { throwError, errorComponent } = useError();
-  useEffect(() => {
-    getLaunch(slug).then(setData).catch(throwError);
-  }, [slug, throwError]);
-  if (errorComponent) return errorComponent;
-  if (data === undefined) return <Loading />;
+export default async function Page({
+  params: { slug },
+}: PageProps): Promise<ReactElement> {
+  const data = await getLaunch(slug);
   const {
     name,
     details,
